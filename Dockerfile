@@ -19,6 +19,8 @@ LABEL \
   org.label-schema.vcs-ref="${VCS_REF}" \
   org.label-schema.build-date="${BUILD_DATE}"
 
+ENV ELASTIC_CONTAINER=true
+
 ARG KIBANA_VERSION
 ENV KIBANA_HOME=/usr/share/kibana
 ARG KIBANA_TARBALL=kibana-${KIBANA_VERSION}-linux-x86_64.tar.gz
