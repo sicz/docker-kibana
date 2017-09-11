@@ -36,6 +36,7 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
+      - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE}
       - JAVA_TRUSTSTORE_PWD_FILE=/usr/share/elasticsearch/config/truststore.pwd
       - JAVA_KEYSTORE_PWD_FILE=/usr/share/elasticsearch/config/keystore.pwd
       - SERVER_CRT_HOST=${SERVER_CRT_HOST}
