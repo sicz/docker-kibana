@@ -31,7 +31,7 @@ jobs:
       - persist_to_workspace:
           root: /tmp/docker-images
           paths:
-            - *.image
+            - "*.image"
 
   kibana-4.6.6:
     working_directory: 4.6.6
