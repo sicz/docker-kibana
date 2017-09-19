@@ -33,7 +33,7 @@ jobs:
           paths:
             - "*.image"
 
-  kibana-5.6.0:
+  kibana-5.6.1:
     docker:
       - image: sicz/dockerspec
     environment:
@@ -50,13 +50,13 @@ jobs:
             curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
             mv Mk-master Mk
       - run:
-          name: sicz/kibana:5.6.0
-          working_directory: 5.6.0
+          name: sicz/kibana:5.6.1
+          working_directory: 5.6.1
           command: |
             make ci
       - run:
           name: Save Docker image to workspace
-          working_directory: 5.6.0
+          working_directory: 5.6.1
           command: |
             mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
@@ -137,10 +137,10 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-5.6.0
+      - kibana-5.6.1
       - kibana-6.0.0
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-5.6.0
+            - kibana-5.6.1
             - kibana-6.0.0

@@ -1,6 +1,6 @@
 ### DOCKER_IMAGE ###############################################################
 
-KIBANA_VERSION		?= 5.6.0
+KIBANA_VERSION		?= 5.6.1
 
 DOCKER_IMAGE_TAGS	?= 5.6 5 latest
 
