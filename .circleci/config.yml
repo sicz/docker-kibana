@@ -33,15 +33,15 @@ jobs:
           paths:
             - *.image
 
-  "sicz/kibana:4.6.6":
+  kibana-4.6.6:
     working_directory: 4.6.6
     <<: *build
 
-  "sicz/kibana:5.6.0":
+  kibana-5.6.0:
     working_directory: 5.6.0
     <<: *build
 
-  "sicz/kibana:6.0.0":
+  kibana-6.0.0:
     working_directory: 6.0.0
     <<: *build
 
@@ -82,11 +82,11 @@ workflows:
 
   build:
     jobs:
-      - "sicz/kibana:4.6.6"
-      - "sicz/kibana:5.6.0"
-      - "sicz/kibana:6.0.0"
+      - kibana-4.6.6
+      - kibana-5.6.0
+      - kibana-6.0.0
       - deploy:
           requires:
-            - "sicz/kibana:4.6.6"
-            - "sicz/kibana:5.6.0"
-            - "sicz/kibana:6.0.0"
+            - kibana-4.6.6
+            - kibana-5.6.0
+            - kibana-6.0.0
