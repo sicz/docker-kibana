@@ -20,9 +20,14 @@ jobs:
           name: sicz/kibana:4.6.6
           working_directory: 4.6.6
           command: |
-            mkdir -p /tmp/workspace
             make ci
+      - run:
+          name: Save Docker image to workspace
+          working_directory: 4.6.6
+          command: |
+            mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            ls -l /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -48,9 +53,14 @@ jobs:
           name: sicz/kibana:5.6.0
           working_directory: 5.6.0
           command: |
-            mkdir -p /tmp/workspace
             make ci
+      - run:
+          name: Save Docker image to workspace
+          working_directory: 5.6.0
+          command: |
+            mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            ls -l /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -76,9 +86,14 @@ jobs:
           name: sicz/kibana:6.0.0
           working_directory: 6.0.0
           command: |
-            mkdir -p /tmp/workspace
             make ci
+      - run:
+          name: Save Docker image to workspace
+          working_directory: 6.0.0
+          command: |
+            mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            ls -l /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
