@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build: &build
+  kibana-4.6.6:
     docker:
       - image: sicz/dockerspec
     environment:
@@ -11,19 +11,14 @@ jobs:
       - setup_remote_docker:
           version: 17.06.0-ce
       - run:
-          name: Remote Docker engine version and images
-          command: |
-            docker --version
-            docker-compose --version
-            docker image ls
-      - run:
           name: Checkout make files
           command: |
-            cd ../..
+            cd ..
             curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
             mv Mk-master Mk
       - run:
-          name: sicz/kibana
+          name: sicz/kibana:4.6.6
+          working_directory: 4.6.6
           command: |
             mkdir -p /tmp/workspace
             make ci
@@ -33,17 +28,61 @@ jobs:
           paths:
             - "*.image"
 
-  kibana-4.6.6:
-    <<: *build
-    working_directory: 4.6.6
-
   kibana-5.6.0:
-    <<: *build
-    working_directory: 5.6.0
+    docker:
+      - image: sicz/dockerspec
+    environment:
+      - MAKEFLAGS=--no-print-directory
+      - RSPEC_FORMAT=doc
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - run:
+          name: Checkout make files
+          command: |
+            cd ..
+            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
+            mv Mk-master Mk
+      - run:
+          name: sicz/kibana:5.6.0
+          working_directory: 5.6.0
+          command: |
+            mkdir -p /tmp/workspace
+            make ci
+            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/docker-images
+          paths:
+            - "*.image"
 
   kibana-6.0.0:
-    <<: *build
-    working_directory: 6.0.0
+    docker:
+      - image: sicz/dockerspec
+    environment:
+      - MAKEFLAGS=--no-print-directory
+      - RSPEC_FORMAT=doc
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - run:
+          name: Checkout make files
+          command: |
+            cd ../..
+            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
+            mv Mk-master Mk
+      - run:
+          name: sicz/kibana:6.0.0
+          working_directory: 6.0.0
+          command: |
+            mkdir -p /tmp/workspace
+            make ci
+            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/docker-images
+          paths:
+            - "*.image"
 
   deploy:
     docker:
