@@ -24,7 +24,7 @@ jobs:
             make ci
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
       - persist_to_workspace:
-          root: /tmp/docker-images
+          root: /tmp/workspace
           paths:
             - "*.image"
 
@@ -52,7 +52,7 @@ jobs:
             make ci
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
       - persist_to_workspace:
-          root: /tmp/docker-images
+          root: /tmp/workspace
           paths:
             - "*.image"
 
@@ -69,7 +69,7 @@ jobs:
       - run:
           name: Checkout make files
           command: |
-            cd ../..
+            cd ..
             curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
             mv Mk-master Mk
       - run:
@@ -80,7 +80,7 @@ jobs:
             make ci
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
       - persist_to_workspace:
-          root: /tmp/docker-images
+          root: /tmp/workspace
           paths:
             - "*.image"
 
