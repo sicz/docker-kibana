@@ -8,7 +8,7 @@ networks:
   default:
 
 services:
-  container:
+  kibana:
     image: ${DOCKER_IMAGE}
     depends_on:
       - elasticsearch
@@ -24,7 +24,7 @@ services:
     networks:
       default:
         aliases:
-          - container.local
+          - kibana.local
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - simple_ca_secrets:/run/secrets:ro
@@ -73,14 +73,14 @@ services:
     image: ${TEST_IMAGE}
     command: ${TEST_CMD}
     depends_on:
-      - container
+      - kibana
     env_file:
       - ${TEST_ENV_FILE}
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
       # Wait until the tested container is started
-      - WAIT_FOR_TCP=container.local:5601
+      - WAIT_FOR_TCP=kibana.local:5601
       - WAIT_FOR_TIMEOUT=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -92,12 +92,12 @@ services:
   wait:
     image: ${TEST_IMAGE}
     depends_on:
-      - container
+      - kibana
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
       # Wait until the tested container is started
-      - WAIT_FOR_TCP=container.local:5601
+      - WAIT_FOR_TCP=kibana.local:5601
       - WAIT_FOR_TIMEOUT=600
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
