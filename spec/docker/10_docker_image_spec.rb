@@ -124,7 +124,7 @@ describe "Docker image", :test => :docker_image do
     ]
 
     if ENV["KIBANA_VERSION"].start_with?("4.") then
-      files += ["/docker-entrypoint.d/31-environment-kibana-4.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]]
+      files << ["/docker-entrypoint.d/31-environment-kibana-4.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]]
     end
 
     files.each do |file, mode, user, group, expectations, localdir|
