@@ -5,3 +5,6 @@
 
 # Tests
 spec
+
+# Docker images
+/*.image

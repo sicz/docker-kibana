@@ -5,3 +5,6 @@
 
 # Info about running containers
 .docker-*
+
+# Docker images
+/*.image
