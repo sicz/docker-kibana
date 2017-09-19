@@ -56,7 +56,7 @@ RUN set -exo pipefail; \
   kibana-plugin install x-pack; \
   rm -f config/kibana.yml
 
-COPY config /
+COPY rootfs /
 
 EXPOSE \
   5601/tcp

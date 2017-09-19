@@ -89,12 +89,10 @@ describe "Docker image", :test => :docker_image do
 
   describe "Commands" do
 
-    # [command, version, args]
-    commands = [
+    [
+      # [command,                           version,                args]
       ["/usr/share/kibana/bin/kibana",      ENV["DOCKER_VERSION"]],
-    ]
-
-    commands.each do |command, version, args|
+    ].each do |command, version, args|
       describe "Command \"#{command}\"" do
         subject { file(command) }
         let(:version_regex) { /\W#{version}\W/ }
@@ -111,7 +109,7 @@ describe "Docker image", :test => :docker_image do
   ### FILES ####################################################################
 
   describe "Files" do
-    [
+    files = [
       # [file,                                            mode, user,       group,      [expectations]]
       ["/docker-entrypoint.sh",                           755, "root",      "root",     [:be_file]],
       ["/docker-entrypoint.d/30-environment-kibana.sh",   644, "root",      "root",     [:be_file, :eq_sha256sum]],
@@ -123,7 +121,13 @@ describe "Docker image", :test => :docker_image do
       ["/usr/share/kibana/logs",                          750, "kibana",    "kibana",   [:be_directory]],
       ["/usr/share/kibana/plugins",                       755, "root",      "root",     [:be_directory]],
       ["/usr/share/kibana/optimize",                      750, "kibana",    "kibana",   [:be_directory]],
-    ].each do |file, mode, user, group, expectations|
+    ]
+
+    if ENV["KIBANA_VERSION"].start_with?("4.") then
+      files += ["/docker-entrypoint.d/31-environment-kibana-4.sh", 644, "root", "root", [:be_file, :eq_sha256sum]]
+    end
+
+    files.each do |file, mode, user, group, expectations|
       expectations ||= []
       context file(file) do
         it { is_expected.to exist }
@@ -134,7 +138,7 @@ describe "Docker image", :test => :docker_image do
         it { is_expected.to be_grouped_into(group) } unless group.nil?
         its(:sha256sum) do
           is_expected.to eq(
-              Digest::SHA256.file("config/#{subject.name}").to_s
+              Digest::SHA256.file("rootfs/#{subject.name}").to_s
           )
         end if expectations.include?(:eq_sha256sum)
       end

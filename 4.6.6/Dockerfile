@@ -48,8 +48,8 @@ RUN set -exo pipefail; \
   chmod -R go-w .; \
   mv config/kibana.yml config/kibana.default.yml
 
-COPY config /
-COPY ${KIBANA_VERSION}/config /
+COPY rootfs /
+COPY ${KIBANA_VERSION}/rootfs /
 
 EXPOSE \
   5601/tcp
