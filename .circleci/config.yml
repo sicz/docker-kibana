@@ -27,7 +27,7 @@ jobs:
           command: |
             mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -l /tmp/workspace
+            ls -lh /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -60,7 +60,7 @@ jobs:
           command: |
             mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -l /tmp/workspace
+            ls -lh /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -93,7 +93,7 @@ jobs:
           command: |
             mkdir -p /tmp/workspace
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -l /tmp/workspace
+            ls -lh /tmp/workspace
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
