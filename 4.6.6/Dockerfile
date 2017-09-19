@@ -20,15 +20,18 @@ LABEL \
   org.label-schema.build-date="${BUILD_DATE}"
 
 ARG KIBANA_VERSION
-ENV KIBANA_HOME=/usr/share/kibana
+ARG KIBANA_HOME=/usr/share/kibana
 ARG KIBANA_TARBALL=kibana-${KIBANA_VERSION}-linux-x86_64.tar.gz
 ARG KIBANA_TARBALL_URL=https://download.elastic.co/kibana/kibana/${KIBANA_TARBALL}
 ARG KIBANA_TARBALL_SHA1_URL=${KIBANA_TARBALL_URL}.sha1.txt
 
 ENV \
-  DOCKER_USER=kibana \
-  DOCKER_COMMAND=kibana \
-  PATH=${KIBANA_HOME}/bin:${PATH}
+  DOCKER_USER="kibana" \
+  DOCKER_COMMAND="kibana" \
+  ELASTIC_CONTAINER="true" \
+  KIBANA_HOME="${KIBANA_HOME}" \
+  KIBANA_VERSION="${KIBANA_VERSION}" \
+  PATH="${KIBANA_HOME}/bin:${PATH}"
 
 WORKDIR ${KIBANA_HOME}
 
@@ -49,4 +52,4 @@ COPY config /
 COPY ${KIBANA_VERSION}/config /
 
 EXPOSE \
-  5600/tcp
+  5601/tcp
