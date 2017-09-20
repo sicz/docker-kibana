@@ -88,7 +88,7 @@ jobs:
           name: Load base Docker image
           working_directory: 5.6.1
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:5.6.1-basic
           working_directory: 5.6.1/basic
@@ -128,7 +128,7 @@ jobs:
           name: Load base Docker image
           working_directory: 5.6.1
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:5.6.1-gold
           working_directory: 5.6.1/gold
@@ -168,7 +168,7 @@ jobs:
           name: Load base Docker image
           working_directory: 5.6.1
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:5.6.1-platinum
           working_directory: 5.6.1/platinum
@@ -241,7 +241,7 @@ jobs:
           name: Load base Docker image
           working_directory: 6.0.0
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:6.0.0-basic
           working_directory: 6.0.0/basic
@@ -281,7 +281,7 @@ jobs:
           name: Load base Docker image
           working_directory: 6.0.0
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:6.0.0-gold
           working_directory: 6.0.0/gold
@@ -321,7 +321,7 @@ jobs:
           name: Load base Docker image
           working_directory: 6.0.0
           command: |
-            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: sicz/kibana:6.0.0-platinum
           working_directory: 6.0.0/platinum
