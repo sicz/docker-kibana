@@ -7,7 +7,7 @@ BASE_IMAGE_TAG		?= $(KIBANA_VERSION)
 
 XPACK_EDITION		?= gold
 
-DOCKER_IMAGE_TAG	?= $(KIBANA_VERSION)-$(XPACK_EDITION)
+DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-$(XPACK_EDITION)
 DOCKER_IMAGE_TAGS	?= 5.6-$(XPACK_EDITION) 5-$(XPACK_EDITION) $(XPACK_EDITION)
 
 ### BUILD ######################################################################

@@ -7,7 +7,7 @@ BASE_IMAGE_TAG		?= $(shell echo $(KIBANA_VERSION) | sed -E "s/-.*//")
 
 XPACK_EDITION		?= gold
 
-DOCKER_IMAGE_TAG	?= $(KIBANA_VERSION)-$(XPACK_EDITION)
+DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-$(XPACK_EDITION)
 DOCKER_IMAGE_TAGS	?= 6.0-$(XPACK_EDITION) 6-$(XPACK_EDITION)
 
 ### BUILD ######################################################################
