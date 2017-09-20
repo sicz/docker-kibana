@@ -29,8 +29,3 @@ RUN set -exo pipefail; \
   cp config/kibana.${XPACK_EDITION}.yml config/kibana.yml; \
   kibana-plugin install x-pack; \
   rm -f config/kibana.yml
-
-COPY rootfs /
-
-EXPOSE \
-  5601/tcp
