@@ -56,15 +56,9 @@ SERVER_KEY_DIR=${KB_PATH_SETTINGS}
 
 ### XPACK_CONFIG ###############################################################
 
-# By default, X-Pack capabilities are disabled
-: ${XPACK_GRAPH_ENABLED:=false}         # From Elasticsearch 5.0.0
-: ${XPACK_ML_ENABLED:=false}            # From Elasticsearch 5.5.0
-: ${XPACK_MONITORING_ENABLED:=false}    # From Elasticsearch 5.0.0
-: ${XPACK_REPORTING_ENABLED:=false}     # From Elasticsearch 5.0.0
-: ${XPACK_SECURITY_ENABLED:=false}      # From Elasticsearch 5.0.0
-
-### WAIT_FOR ###################################################################
-
-WAIT_FOR_URL="${WAIT_FOR_URL} ${ELASTICSEARCH_URL}"
+if [ -n "${XPACK_EDITION}" ]; then
+  KB_SETTINGS_FILES="${KB_SETTINGS_FILES} kibana.${XPACK_EDITION}.yml"
+  unset XPACK_EDITION
+fi
 
 ################################################################################

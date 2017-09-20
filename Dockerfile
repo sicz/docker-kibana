@@ -19,7 +19,6 @@ LABEL \
   org.label-schema.vcs-ref="${VCS_REF}" \
   org.label-schema.build-date="${BUILD_DATE}"
 
-
 ARG KIBANA_VERSION
 ARG KIBANA_HOME="/usr/share/kibana"
 ARG KIBANA_TARBALL="kibana-${KIBANA_VERSION}-linux-x86_64.tar.gz"
@@ -48,13 +47,6 @@ RUN set -exo pipefail; \
   chown -R root:root .; \
   chmod -R go-w .; \
   mv config/kibana.yml config/kibana.default.yml
-
-RUN set -exo pipefail; \
-  # Add X-Pack Reporting dependencies
-  yum update -y && yum install -y fontconfig freetype && yum clean all; \
-  touch config/kibana.yml; \
-  kibana-plugin install x-pack; \
-  rm -f config/kibana.yml
 
 COPY rootfs /
 
