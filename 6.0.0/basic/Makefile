@@ -1,7 +1,7 @@
 ### BASE_IMAGE #################################################################
 
 BASE_IMAGE_NAME		?= $(DOCKER_IMAGE_NAME)
-BASE_IMAGE_TAG		?= $(KIBANA_VERSION)
+BASE_IMAGE_TAG		?= $(shell echo $(KIBANA_VERSION) | sed -E "s/-.*//")
 
 ### DOCKER_IMAGE ###############################################################
 
