@@ -46,17 +46,17 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Load Kibana image
+          name: Load Kibana base image
           command: |
             cd ${CI_DIR}
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
+            make docker-load-baseimage DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
-          name: Build Kibana Plugin image
+          name: Build Kibana plugin image
           command: |
             cd ${CI_DIR}
             make ci
       - run:
-          name: Save Kibana Plugin image to workspace
+          name: Save Kibana plugin image to workspace
           command: |
             cd ${CI_DIR}
             mkdir -p /tmp/workspace
