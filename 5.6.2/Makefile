@@ -1,8 +1,13 @@
 ### DOCKER_IMAGE ###############################################################
 
-KIBANA_VERSION		?= 5.6.1
+KIBANA_VERSION		?= 5.6.2
 
-DOCKER_IMAGE_TAGS	?= 5.6 5 latest
+DOCKER_IMAGE_TAGS	?= latest
+
+### TEST #######################################################################
+
+# Skip Elasticsearch X-Pack tests
+SPEC_OPTS		?= --tag ~x_pack
 
 ### MK_DOCKER_IMAGE ############################################################
 

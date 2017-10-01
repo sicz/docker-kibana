@@ -1,343 +1,134 @@
 version: 2
 jobs:
+  build_kibana: &build_kibana
+    docker:
+      - image: sicz/dockerspec
+    steps:
+      - checkout
+      - run:
+          name: Checkout make files
+          command: |
+            cd ..
+            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
+            mv Mk-master Mk
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - run:
+          name: Build and test Kibana image
+          command: |
+            cd ${CI_DIR}
+            make ci
+      - run:
+          name: Save Docker image to workspace
+          command: |
+            cd ${CI_DIR}
+            mkdir -p /tmp/workspace
+            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            ls -lh /tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - "*.image"
+
+  build_plugin: &build_plugin
+    docker:
+      - image: sicz/dockerspec
+    steps:
+      - checkout
+      - run:
+          name: Checkout make files
+          command: |
+            cd ..
+            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
+            mv Mk-master Mk
+      - setup_remote_docker:
+          version: 17.06.0-ce
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load Kibana image
+          command: |
+            cd ${CI_DIR}
+            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
+      - run:
+          name: Build Kibana Plugin image
+          command: |
+            cd ${CI_DIR}
+            make ci
+      - run:
+          name: Save Kibana Plugin image to workspace
+          command: |
+            cd ${CI_DIR}
+            mkdir -p /tmp/workspace
+            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
+            ls -lh /tmp/workspace
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - "*.image"
+
   kibana-4.6.6:
-    docker:
-      - image: sicz/dockerspec
+    <<: *build_kibana
     environment:
+      - CI_DIR=4.6.6
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - run:
-          name: sicz/kibana:4.6.6
-          working_directory: 4.6.6
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 4.6.6
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
-  kibana-5.6.1:
-    docker:
-      - image: sicz/dockerspec
+  kibana-5.6.2:
+    <<: *build_kibana
     environment:
+      - CI_DIR=5.6.2
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - run:
-          name: sicz/kibana:5.6.1
-          working_directory: 5.6.1
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 5.6.1
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
-  kibana-5.6.1-basic:
-    docker:
-      - image: sicz/dockerspec
+  kibana-5.6.2-basic:
+    <<: *build_plugin
     environment:
+      - CI_DIR=5.6.2/basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 5.6.1
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:5.6.1-basic
-          working_directory: 5.6.1/basic
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 5.6.1/basic
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
-  kibana-5.6.1-gold:
-    docker:
-      - image: sicz/dockerspec
+  kibana-5.6.2-gold:
+    <<: *build_plugin
     environment:
+      - CI_DIR=5.6.2/gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 5.6.1
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:5.6.1-gold
-          working_directory: 5.6.1/gold
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 5.6.1/gold
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
-  kibana-5.6.1-platinum:
-    docker:
-      - image: sicz/dockerspec
+  kibana-5.6.2-platinum:
+    <<: *build_plugin
     environment:
+      - CI_DIR=5.6.2/platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 5.6.1
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:5.6.1-platinum
-          working_directory: 5.6.1/platinum
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 5.6.1/platinum
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
   kibana-6.0.0:
-    docker:
-      - image: sicz/dockerspec
+    <<: *build_kibana
     environment:
+      - CI_DIR=6.0.0
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - run:
-          name: sicz/kibana:6.0.0
-          working_directory: 6.0.0
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 6.0.0
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
   kibana-6.0.0-basic:
-    docker:
-      - image: sicz/dockerspec
+    <<: *build_plugin
     environment:
+      - CI_DIR=6.0.0/basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 6.0.0
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:6.0.0-basic
-          working_directory: 6.0.0/basic
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 6.0.0/basic
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
   kibana-6.0.0-gold:
-    docker:
-      - image: sicz/dockerspec
+    <<: *build_plugin
     environment:
+      - CI_DIR=6.0.0/gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 6.0.0
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:6.0.0-gold
-          working_directory: 6.0.0/gold
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 6.0.0/gold
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
   kibana-6.0.0-platinum:
-    docker:
-      - image: sicz/dockerspec
+    <<: *build_plugin
     environment:
+      - CI_DIR=6.0.0/platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Checkout make files
-          command: |
-            cd ..
-            curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
-            mv Mk-master Mk
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load base Docker image
-          working_directory: 6.0.0
-          command: |
-            make docker-load-image clean DOCKER_IMAGE_DEPOT=/tmp/workspace
-      - run:
-          name: sicz/kibana:6.0.0-platinum
-          working_directory: 6.0.0/platinum
-          command: |
-            make ci
-      - run:
-          name: Save Docker image to workspace
-          working_directory: 6.0.0/platinum
-          command: |
-            mkdir -p /tmp/workspace
-            make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
-            ls -lh /tmp/workspace
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - "*.image"
 
   deploy:
     docker:
@@ -346,20 +137,14 @@ jobs:
       - MAKEFLAGS=--no-print-directory
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 17.06.0-ce
-      - run:
-          name: Remote Docker engine version and images
-          command: |
-            docker --version
-            docker-compose --version
-            docker image ls
       - run:
           name: Checkout make files
           command: |
             cd ..
             curl -sSL https://github.com/SICZ/Mk/archive/master.tar.gz | tar -xzf -
             mv Mk-master Mk
+      - setup_remote_docker:
+          version: 17.06.0-ce
       - attach_workspace:
           at: /tmp/workspace
       - deploy:
@@ -377,17 +162,17 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-5.6.1
+      - kibana-5.6.2
+      - kibana-5.6.2-basic:
+          requires:
+            - kibana-5.6.2
+      - kibana-5.6.2-gold:
+          requires:
+            - kibana-5.6.2
+      - kibana-5.6.2-platinum:
+          requires:
+            - kibana-5.6.2
       - kibana-6.0.0
-      - kibana-5.6.1-basic:
-          requires:
-            - kibana-5.6.1
-      - kibana-5.6.1-gold:
-          requires:
-            - kibana-5.6.1
-      - kibana-5.6.1-platinum:
-          requires:
-            - kibana-5.6.1
       - kibana-6.0.0-basic:
           requires:
             - kibana-6.0.0
@@ -400,11 +185,11 @@ workflows:
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-5.6.1
+            - kibana-5.6.2
+            - kibana-5.6.2-basic
+            - kibana-5.6.2-gold
+            - kibana-5.6.2-platinum
             - kibana-6.0.0
-            - kibana-5.6.1-basic
-            - kibana-5.6.1-gold
-            - kibana-5.6.1-platinum
             - kibana-6.0.0-basic
             - kibana-6.0.0-gold
             - kibana-6.0.0-platinum

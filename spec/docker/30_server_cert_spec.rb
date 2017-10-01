@@ -12,13 +12,13 @@ describe "Server certificate", :test => :server_cert do
   crt_subj    = ENV["SERVER_CRT_SUBJECT"]     || "CN=#{ENV["CONTAINER_NAME"]}"
   crt_user    = ENV["SERVER_CRT_FILE_USER"]   || "kibana"
   crt_group   = ENV["SERVER_CRT_FILE_GROUP"]  || "kibana"
-  crt_mode    = ENV["SERVER_CRT_FILE_MODE"]   || 440
+  crt_mode    = ENV["SERVER_CRT_FILE_MODE"]   || 640
 
   key         = ENV["SERVER_KEY_FILE"]        || "/usr/share/kibana/config/server.key"
   key_pwd     = ENV["SERVER_KEY_PWD_FILE"]    || "/usr/share/kibana/config/server.pwd"
   key_user    = ENV["SERVER_KEY_FILE_USER"]   || "kibana"
   key_group   = ENV["SERVER_KEY_FILE_GROUP"]  || "kibana"
-  key_mode    = ENV["SERVER_KEY_FILE_MODE"]   || 440
+  key_mode    = ENV["SERVER_KEY_FILE_MODE"]   || 640
 
   ### CERTIFICATE ##############################################################
 

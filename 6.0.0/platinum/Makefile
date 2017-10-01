@@ -1,20 +1,36 @@
 ### BASE_IMAGE #################################################################
 
 BASE_IMAGE_NAME		?= $(DOCKER_IMAGE_NAME)
-BASE_IMAGE_TAG		?= $(shell echo $(KIBANA_VERSION) | sed -E "s/-.*//")
+BASE_IMAGE_TAG		?= $(KIBANA_TAG)
 
 ### DOCKER_IMAGE ###############################################################
 
 XPACK_EDITION		?= platinum
 
-DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-$(XPACK_EDITION)
-DOCKER_IMAGE_TAGS	?= 6.0-$(XPACK_EDITION) 6-$(XPACK_EDITION) $(XPACK_EDITION)
+DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-x-pack-$(XPACK_EDITION)
 
 ### BUILD ######################################################################
 
 VARIANT_DIR		?= $(PROJECT_DIR)/x-pack
 
-BUILD_VARS		+= XPACK_EDITION
+BUILD_VARS		?= XPACK_EDITION
+
+### EXECUTOR ###################################################################
+
+DOCKER_CONFIG		?= $(XPACK_EDITION)
+
+# X-Pack Platinum supports HTTPS
+ELASTICSEARCH_URL	?= https://elasticsearch.local:9200
+KIBANA_URL		?= https://kibana.local:5601
+
+### ELASTICSEARCH ##############################################################
+
+ELASTICSEARCH_IMAGE_TAG	?= $(KIBANA_TAG)-x-pack
+
+### TEST #######################################################################
+
+# Do all tests
+SPEC_OPTS		?=
 
 ### MK_DOCKER_IMAGE ############################################################
 

@@ -1,0 +1,11 @@
+###
+### Default configuration
+###
+
+version: "3.3"
+
+services:
+  elasticsearch:
+    environment:
+      # Elasticsearch 2.x does not support dicovery type single-node
+      - discovery.type=

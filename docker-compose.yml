@@ -16,10 +16,13 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
-      - ELASTICSEARCH_URL=http://elasticsearch.local:9200
+      - KB_ELASTICSEARCH_URL=http://elasticsearch.local:9200
       - SERVER_CRT_HOST=${SERVER_CRT_HOST}
       - SERVER_KEY_PWD_FILE=/usr/share/kibana/config/server.pwd
       - SIMPLE_CA_URL=https://simple-ca.local
+      - WAIT_FOR_DNS=elasticsearch.local:9200
+    # ports:
+    #   - 5601:5601/tcp
     networks:
       default:
         aliases:
@@ -30,18 +33,10 @@ services:
 
   elasticsearch:
     image: ${ELASTICSEARCH_IMAGE}
-    depends_on:
-      - simple_ca
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
-      - ES_DISCOVERY_TYPE=${ES_DISCOVERY_TYPE}
-      - JAVA_TRUSTSTORE_PWD_FILE=/usr/share/elasticsearch/config/truststore.pwd
-      - JAVA_KEYSTORE_PWD_FILE=/usr/share/elasticsearch/config/keystore.pwd
-      - SERVER_CRT_HOST=${SERVER_CRT_HOST}
-      - SIMPLE_CA_URL=https://simple-ca.local
-      - XPACK_MONITORING_ENABLED=true
-      - WAIT_FOR_URL=https://simple-ca.local/ca.crt
+      - discovery.type=single-node
     expose:
       - 9200/tcp
       - 9300/tcp
@@ -51,7 +46,6 @@ services:
           - elasticsearch.local
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - simple_ca_secrets:/run/secrets:ro
 
   simple_ca:
     image: ${SIMPLE_CA_IMAGE}
@@ -67,6 +61,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - simple_ca_data:/var/lib/simple-ca
       - simple_ca_secrets:/var/lib/simple-ca/secrets
+
+  test:
+    volumes:
+      - simple_ca_secrets:/run/secrets:ro
+
+  wait:
+    volumes:
+      - simple_ca_secrets:/run/secrets:ro
 
   test:
     image: ${TEST_IMAGE}
@@ -103,6 +105,6 @@ services:
       - simple_ca_secrets:/run/secrets:ro
 
 volumes:
-  test_project_dir:
   simple_ca_data:
   simple_ca_secrets:
+  test_project_dir:

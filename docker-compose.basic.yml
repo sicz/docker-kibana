@@ -1,0 +1,14 @@
+###
+###Kibana with X-Pack configuration
+###
+
+version: "3.3"
+
+services:
+  kibana:
+    environment:
+      - XPACK_EDITION=${XPACK_EDITION}
+
+  elasticsearch:
+    environment:
+      - XPACK_EDITION=${XPACK_EDITION}

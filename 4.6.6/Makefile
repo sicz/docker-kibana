@@ -2,13 +2,20 @@
 
 KIBANA_VERSION		?= 4.6.6
 
-DOCKER_IMAGE_TAGS	?= 4.6 4
-
 ### BUILD ######################################################################
 
-ELASTICSEARCH_VERSION	?= 2.4.5
-ES_DISCOVERY_TYPE	?=
 VARIANT_DIR		?= $(CURDIR)
+
+### EXECUTOR ###################################################################
+
+DOCKER_CONFIG		?= kibana-4
+
+ELASTICSEARCH_IMAGE_TAG	?= 2.4.5
+
+### TEST #######################################################################
+
+# Skip Elasticsearch X-Pack tests
+SPEC_OPTS		?= --tag ~x_pack
 
 ### MK_DOCKER_IMAGE ############################################################
 

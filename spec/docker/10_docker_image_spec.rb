@@ -112,19 +112,24 @@ describe "Docker image", :test => :docker_image do
     files = [
       # [file,                                            mode, user,       group,      [expectations], localdir]
       ["/docker-entrypoint.sh",                           755, "root",      "root",     [:be_file]],
-      ["/docker-entrypoint.d/30-environment-kibana.sh",   644, "root",      "root",     [:be_file, :eq_sha256sum]],
-      ["/docker-entrypoint.d/60-kibana-settings.sh",      644, "root",      "root",     [:be_file, :eq_sha256sum]],
+      ["/docker-entrypoint.d/30-kibana-environment.sh",   644, "root",      "root",     [:be_file, :eq_sha256sum]],
+      ["/docker-entrypoint.d/60-kibana-fragments.sh",     644, "root",      "root",     [:be_file, :eq_sha256sum]],
+      ["/docker-entrypoint.d/70-kibana-settings.sh",      644, "root",      "root",     [:be_file, :eq_sha256sum]],
+      ["/docker-entrypoint.d/80-kibana-opts.sh",          644, "root",      "root",     [:be_file, :eq_sha256sum]],
       ["/usr/share/kibana",                               755, "root",      "root",     [:be_directory]],
       ["/usr/share/kibana/bin",                           755, "root",      "root",     [:be_directory]],
       ["/usr/share/kibana/config",                        750, "kibana",    "kibana",   [:be_directory]],
       ["/usr/share/kibana/data",                          750, "kibana",    "kibana",   [:be_directory]],
-      ["/usr/share/kibana/logs",                          750, "kibana",    "kibana",   [:be_directory]],
+      # ["/usr/share/kibana/logs",                          750, "kibana",    "kibana",   [:be_directory]],
       ["/usr/share/kibana/plugins",                       755, "root",      "root",     [:be_directory]],
       ["/usr/share/kibana/optimize",                      750, "kibana",    "kibana",   [:be_directory]],
     ]
 
     if ENV["KIBANA_VERSION"].start_with?("4.") then
-      files << ["/docker-entrypoint.d/31-environment-kibana-4.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]]
+      files += [
+        ["/docker-entrypoint.d/31-kb4x-environment.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]],
+        ["/docker-entrypoint.d/61-kb4x-fragments.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]],
+      ]
     end
 
     files.each do |file, mode, user, group, expectations, localdir|

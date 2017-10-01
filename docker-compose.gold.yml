@@ -1,0 +1,32 @@
+###
+###Kibana with X-Pack configuration
+###
+
+version: "3.3"
+
+services:
+  kibana:
+    environment:
+      - XPACK_EDITION=${XPACK_EDITION}
+
+  elasticsearch:
+    depends_on:
+      - simple_ca
+    environment:
+      - SERVER_CRT_HOST=${SERVER_CRT_HOST}
+      - SIMPLE_CA_URL=https://simple-ca.local
+      - XPACK_EDITION=${XPACK_EDITION}
+    volumes:
+      - simple_ca_secrets:/run/secrets:ro
+
+  test:
+    volumes:
+      - simple_ca_secrets:/run/secrets:ro
+
+  wait:
+    volumes:
+      - simple_ca_secrets:/run/secrets:ro
+
+volumes:
+  simple_ca_data:
+  simple_ca_secrets:

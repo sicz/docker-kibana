@@ -5,25 +5,19 @@ BASE_IMAGE_TAG		?= 7
 
 ### DOCKER_IMAGE ###############################################################
 
+KIBANA_TAG		?= $(KIBANA_VERSION)
+
 DOCKER_PROJECT		?= sicz
 DOCKER_PROJECT_DESC	?= An analytics and search dashboard for Elasticsearch
 DOCKER_PROJECT_URL	?= https://www.elastic.co/products/kibana
 
 DOCKER_NAME		?= kibana
-DOCKER_IMAGE_TAG	?= $(KIBANA_VERSION)
+DOCKER_IMAGE_TAG	?= $(KIBANA_TAG)
 
 ### BUILD ######################################################################
 
 # Docker image build variables
-BUILD_VARS		+= ELASTICSEARCH_IMAGE \
-			   ES_DISCOVERY_TYPE \
-			   KIBANA_VERSION
-
-ELASTICSEARCH_VERSION	?= $(shell echo $(KIBANA_VERSION) | sed -E "s/-.*//")
-ELASTICSEARCH_IMAGE	?= $(DOCKER_PROJECT)/elasticsearch:$(ELASTICSEARCH_VERSION)
-
-# Disable Elasticsearch bootstrap checks
-ES_DISCOVERY_TYPE	?= single-node
+BUILD_VARS		+= KIBANA_VERSION
 
 ### DOCKER_EXECUTOR ############################################################
 
@@ -31,11 +25,26 @@ ES_DISCOVERY_TYPE	?= single-node
 DOCKER_EXECUTOR		?= compose
 
 # Variables used in the Docker Compose file
-COMPOSE_VARS		+= SERVER_CRT_HOST \
+COMPOSE_VARS		+= ELASTICSEARCH_IMAGE \
+			   KIBANA_URL \
+			   SERVER_CRT_HOST \
 			   SIMPLE_CA_IMAGE
 
 # Certificate subject aletrnative names
 SERVER_CRT_HOST		+= $(SERVICE_NAME).local
+
+# Kibana URL
+KIBANA_URL		?= http://kibana.local:5601
+
+### ELASTICSEARCH ##############################################################
+
+# Docker image dependencies
+DOCKER_IMAGE_DEPENDENCIES += $(ELASTICSEARCH_IMAGE)
+
+# Elasticsearch image
+ELASTICSEARCH_IMAGE_NAME ?= $(DOCKER_PROJECT)/elasticsearch
+ELASTICSEARCH_IMAGE_TAG	?= $(KIBANA_TAG)
+ELASTICSEARCH_IMAGE	?= $(ELASTICSEARCH_IMAGE_NAME):$(ELASTICSEARCH_IMAGE_TAG)
 
 ### SIMPLE_CA ##################################################################
 
@@ -43,45 +52,33 @@ SERVER_CRT_HOST		+= $(SERVICE_NAME).local
 DOCKER_IMAGE_DEPENDENCIES += $(SIMPLE_CA_IMAGE)
 
 # Simple CA image
-SIMPLE_CA_NAME		?= simple-ca
-SIMPLE_CA_IMAGE_NAME	?= $(DOCKER_PROJECT)/$(SIMPLE_CA_NAME)
+SIMPLE_CA_IMAGE_NAME	?= $(DOCKER_PROJECT)/simple-ca
 SIMPLE_CA_IMAGE_TAG	?= latest
 SIMPLE_CA_IMAGE		?= $(SIMPLE_CA_IMAGE_NAME):$(SIMPLE_CA_IMAGE_TAG)
 
 # Simple CA service name in Docker Compose file
 SIMPLE_CA_SERVICE_NAME	?= $(shell echo $(SIMPLE_CA_NAME) | sed -E -e "s/[^[:alnum:]_]+/_/g")
 
-# Simple CA container name
-ifeq ($(DOCKER_EXECUTOR),container)
-SIMPLE_CA_CONTAINER_NAME ?= $(DOCKER_EXECUTOR_ID)_$(SIMPLE_CA_SERVICE_NAME)
-else ifeq ($(DOCKER_EXECUTOR),compose)
-SIMPLE_CA_CONTAINER_NAME ?= $(DOCKER_EXECUTOR_ID)_$(SIMPLE_CA_SERVICE_NAME)_1
-else ifeq ($(DOCKER_EXECUTOR),stack)
-# TODO: Docker Swarm Stack executor
-SIMPLE_CA_CONTAINER_NAME ?= $(DOCKER_EXECUTOR_ID)_$(SIMPLE_CA_SERVICE_NAME)_1
-else
-$(error Unknown Docker executor "$(DOCKER_EXECUTOR)")
-endif
-
 ### MAKE_VARS ##################################################################
 
 # Display the make variables
 MAKE_VARS		?= GITHUB_MAKE_VARS \
+			   CONFIG_MAKE_VARS \
 			   BASE_IMAGE_MAKE_VARS \
 			   DOCKER_IMAGE_MAKE_VARS \
-			   CONFIG_MAKE_VARS \
 			   BUILD_MAKE_VARS \
 			   EXECUTOR_MAKE_VARS \
 			   SHELL_MAKE_VARS \
 			   DOCKER_REGISTRY_MAKE_VARS
 
-
 define CONFIG_MAKE_VARS
 KIBANA_VERSION:		$(KIBANA_VERSION)
+KIBANA_TAG:		$(KIBANA_TAG)
+XPACK_EDITION:		$(XPACK_EDITION)
 
-ELASTICSEARCH_VERSION:	$(ELASTICSEARCH_VERSION)
+ELASTICSEARCH_IMAGE_NAME: $(ELASTICSEARCH_IMAGE_NAME)
+ELASTICSEARCH_IMAGE_TAG: $(ELASTICSEARCH_IMAGE_TAG)
 ELASTICSEARCH_IMAGE:	$(ELASTICSEARCH_IMAGE)
-ES_DISCOVERY_TYPE:	$(ES_DISCOVERY_TYPE)
 
 SIMPLE_CA_IMAGE_NAME:	$(SIMPLE_CA_IMAGE_NAME)
 SIMPLE_CA_IMAGE_TAG:	$(SIMPLE_CA_IMAGE_TAG)

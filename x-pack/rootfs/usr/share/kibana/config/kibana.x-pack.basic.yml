@@ -1,0 +1,4 @@
+xpack.reporting.enabled: false
+xpack.security.enabled: false
+xpack.graph.enabled: false
+xpack.ml.enabled: false

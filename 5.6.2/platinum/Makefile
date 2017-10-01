@@ -5,9 +5,10 @@ BASE_IMAGE_TAG		?= $(KIBANA_TAG)
 
 ### DOCKER_IMAGE ###############################################################
 
-XPACK_EDITION		?= gold
+XPACK_EDITION		?= platinum
 
 DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-x-pack-$(XPACK_EDITION)
+DOCKER_IMAGE_TAGS	?= x-pack-$(XPACK_EDITION)
 
 ### BUILD ######################################################################
 
@@ -19,7 +20,7 @@ BUILD_VARS		?= XPACK_EDITION
 
 DOCKER_CONFIG		?= $(XPACK_EDITION)
 
-# X-Pack Gold supports HTTPS
+# X-Pack Platinum supports HTTPS
 ELASTICSEARCH_URL	?= https://elasticsearch.local:9200
 KIBANA_URL		?= https://kibana.local:5601
 

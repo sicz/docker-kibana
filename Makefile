@@ -14,10 +14,10 @@ SHELL			+= -e
 
 # Docker image versions
 DOCKER_VERSIONS		?= 4.6.6 \
-			   5.6.1 \
-			   5.6.1/basic \
-			   5.6.1/gold \
-			   5.6.1/platinum \
+			   5.6.2 \
+			   5.6.2/basic \
+			   5.6.2/gold \
+			   5.6.2/platinum \
 			   6.0.0 \
 			   6.0.0/basic \
 			   6.0.0/gold \
