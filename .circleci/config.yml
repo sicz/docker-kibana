@@ -60,6 +60,7 @@ jobs:
           command: |
             cd ${CI_DIR}
             mkdir -p /tmp/workspace
+            rm -f /tmp/workspace/*.image
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
             ls -lh /tmp/workspace
       - persist_to_workspace:
