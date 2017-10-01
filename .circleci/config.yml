@@ -48,8 +48,8 @@ jobs:
       - run:
           name: Load Kibana base image
           command: |
-            cd ${CI_DIR}
-            make docker-load-baseimage DOCKER_IMAGE_DEPOT=/tmp/workspace
+            cd ${CI_DIR}/..
+            make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: Build Kibana plugin image
           command: |
