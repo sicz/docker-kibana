@@ -2,8 +2,6 @@
 
 KIBANA_VERSION		?= 5.6.2
 
-DOCKER_IMAGE_TAGS	?= latest
-
 ### TEST #######################################################################
 
 # Skip Elasticsearch X-Pack tests

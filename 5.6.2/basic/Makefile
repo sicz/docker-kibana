@@ -8,7 +8,6 @@ BASE_IMAGE_TAG		?= $(KIBANA_TAG)
 XPACK_EDITION		?= basic
 
 DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-x-pack-$(XPACK_EDITION)
-DOCKER_IMAGE_TAGS	?= x-pack-$(XPACK_EDITION) x-pack
 
 ### BUILD ######################################################################
 
