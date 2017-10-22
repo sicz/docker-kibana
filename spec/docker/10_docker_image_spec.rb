@@ -88,7 +88,6 @@ describe "Docker image", :test => :docker_image do
   ### COMMANDS #################################################################
 
   describe "Commands" do
-
     [
       # [command,                           version,                args]
       ["/usr/share/kibana/bin/kibana",      ENV["DOCKER_VERSION"]],
@@ -110,31 +109,98 @@ describe "Docker image", :test => :docker_image do
 
   describe "Files" do
     files = [
-      # [file,                                            mode, user,       group,      [expectations], localdir]
-      ["/docker-entrypoint.sh",                           755, "root",      "root",     [:be_file]],
-      ["/docker-entrypoint.d/30-kibana-environment.sh",   644, "root",      "root",     [:be_file, :eq_sha256sum]],
-      ["/docker-entrypoint.d/60-kibana-fragments.sh",     644, "root",      "root",     [:be_file, :eq_sha256sum]],
-      ["/docker-entrypoint.d/70-kibana-settings.sh",      644, "root",      "root",     [:be_file, :eq_sha256sum]],
-      ["/docker-entrypoint.d/80-kibana-opts.sh",          644, "root",      "root",     [:be_file, :eq_sha256sum]],
-      ["/usr/share/kibana",                               755, "root",      "root",     [:be_directory]],
-      ["/usr/share/kibana/bin",                           755, "root",      "root",     [:be_directory]],
-      ["/usr/share/kibana/config",                        750, "kibana",    "kibana",   [:be_directory]],
-      ["/usr/share/kibana/data",                          750, "kibana",    "kibana",   [:be_directory]],
-      # ["/usr/share/kibana/logs",                          750, "kibana",    "kibana",   [:be_directory]],
-      ["/usr/share/kibana/plugins",                       755, "root",      "root",     [:be_directory]],
-      ["/usr/share/kibana/optimize",                      750, "kibana",    "kibana",   [:be_directory]],
+      # [
+      #   file,
+      #   mode, user, group, [expectations],
+      #   localdir, srcfile,
+      #   match
+      # ]
+      [
+        "/docker-entrypoint.sh",
+        755, "root", "root", [:be_file],
+      ],
+      [
+        "/docker-entrypoint.d/30-kibana-environment.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum]
+      ],
+      [
+        "/docker-entrypoint.d/60-kibana-fragments.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+      ],
+      [
+        "/docker-entrypoint.d/70-kibana-settings.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+      ],
+      [
+        "/docker-entrypoint.d/80-kibana-opts.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+      ],
+      [
+        "/usr/share/kibana",
+        755, "root", "root", [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/bin",
+        755, "root", "root", [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/config",
+        750, "kibana", "kibana", [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/config/kibana.docker.yml",
+        640, "kibana", "kibana", [:be_file],
+      ],
+      [
+        "/usr/share/kibana/config/kibana.server-certs.yml",
+        640, "kibana", "kibana", [:be_file],
+      ],
+      [
+        "/usr/share/kibana/config/kibana.yml",
+        640, "kibana", "kibana", [:be_file],
+        nil, nil,
+        [
+          "^# kibana.docker.yml$",
+          "^# kibana.server-certs.yml$",
+        ],
+      ],
+      [
+        "/usr/share/kibana/data",
+        750, "kibana", "kibana", [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/logs",
+        750, "kibana", "kibana",   [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/plugins",
+        755, "root", "root", [:be_directory],
+      ],
+      [
+        "/usr/share/kibana/optimize",
+        750, "kibana", "kibana", [:be_directory],
+      ],
     ]
 
     if ENV["KIBANA_VERSION"].start_with?("4.") then
       files += [
-        ["/docker-entrypoint.d/31-kb4x-environment.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]],
-        ["/docker-entrypoint.d/61-kb4x-fragments.sh", 644, "root", "root", [:be_file, :eq_sha256sum], ENV["DOCKER_IMAGE_TAG"]],
+        [
+          "/docker-entrypoint.d/31-kb4x-environment.sh",
+          644, "root", "root", [:be_file, :eq_sha256sum],
+          "#{ENV["KIBANA_VERSION"]}/rootfs",
+        ],
+        [
+          "/docker-entrypoint.d/61-kb4x-fragments.sh",
+          644, "root", "root", [:be_file, :eq_sha256sum],
+          "#{ENV["KIBANA_VERSION"]}/rootfs",
+        ],
       ]
     end
 
-    files.each do |file, mode, user, group, expectations, localdir|
+    files.each do |file, mode, user, group, expectations, rootfs, srcfile, match|
       expectations ||= []
-      localdir = "." if localdir.nil?
+      rootfs = "rootfs" if rootfs.nil?
+      srcfile = file if srcfile.nil?
       context file(file) do
         it { is_expected.to exist }
         it { is_expected.to be_file }       if expectations.include?(:be_file)
@@ -142,16 +208,107 @@ describe "Docker image", :test => :docker_image do
         it { is_expected.to be_mode(mode) } unless mode.nil?
         it { is_expected.to be_owned_by(user) } unless user.nil?
         it { is_expected.to be_grouped_into(group) } unless group.nil?
+        case match
+        when String
+          its(:content) { is_expected.to match(match) }
+        when Array
+          match.each do |m|
+            its(:content) { is_expected.to match(m) }
+          end
+        end
         its(:sha256sum) do
           is_expected.to eq(
-              Digest::SHA256.file("#{localdir}/rootfs/#{subject.name}").to_s
+            Digest::SHA256.file("#{rootfs}/#{srcfile}").to_s
           )
         end if expectations.include?(:eq_sha256sum)
       end
     end
   end
 
-  ##############################################################################
+  ### XPACK_FILES ##############################################################
+
+  describe "X-Pack Files", :test => :docker_image, :x_pack => true do
+    [
+      # [
+      #   file,
+      #   mode, user, group, [expectations],
+      #   rootfs, srcfile,
+      #   match,
+      # ]
+      [
+        "/docker-entrypoint.d/32-x-pack-environment.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/docker-entrypoint.d/62-x-pack-fragments.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/docker-entrypoint.d/72-x-pack-settings.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/usr/share/kibana/config/kibana.x-pack.basic.yml",
+        640, "kibana", "kibana", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/usr/share/kibana/config/kibana.x-pack.gold.yml",
+        640, "kibana", "kibana", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/usr/share/kibana/config/kibana.x-pack.platinum.yml",
+        640, "kibana", "kibana", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/usr/share/kibana/config/kibana.yml",
+        640, "kibana", "kibana", [:be_file],
+        nil, nil,
+        [
+          "^# kibana.docker.yml$",
+          "^# kibana.server-certs.yml$",
+          "^# kibana.x-pack.#{ENV["XPACK_EDITION"]}.yml$",
+        ],
+      ],
+      [
+        "/usr/share/kibana/plugins/x-pack",
+        755, "root", "root", [:be_directory],
+      ],
+    ].each do |file, mode, user, group, expectations, rootfs, srcfile, match|
+      expectations ||= []
+      rootfs = "rootfs" if rootfs.nil?
+      srcfile = file if srcfile.nil?
+      context file(file) do
+        it { is_expected.to exist }
+        it { is_expected.to be_file }       if expectations.include?(:be_file)
+        it { is_expected.to be_directory }  if expectations.include?(:be_directory)
+        it { is_expected.to be_mode(mode) } unless mode.nil?
+        it { is_expected.to be_owned_by(user) } unless user.nil?
+        it { is_expected.to be_grouped_into(group) } unless group.nil?
+        case match
+        when String
+          its(:content) { is_expected.to match(match) }
+        when Array
+          match.each do |m|
+            its(:content) { is_expected.to match(m) }
+          end
+        end
+        its(:sha256sum) do
+          is_expected.to eq(
+            Digest::SHA256.file("#{rootfs}/#{srcfile}").to_s
+          )
+        end if expectations.include?(:eq_sha256sum)
+      end
+    end
+
+  end
+
+  ############################################################################################################################################################
 
 end
 

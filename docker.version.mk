@@ -19,22 +19,18 @@ DOCKER_IMAGE_TAG	?= $(KIBANA_TAG)
 # Docker image build variables
 BUILD_VARS		+= KIBANA_VERSION
 
-### DOCKER_EXECUTOR ############################################################
+### EXECUTOR ###################################################################
 
 # Use the Docker Compose executor
 DOCKER_EXECUTOR		?= compose
 
 # Variables used in the Docker Compose file
 COMPOSE_VARS		+= ELASTICSEARCH_IMAGE \
-			   KIBANA_URL \
 			   SERVER_CRT_HOST \
 			   SIMPLE_CA_IMAGE
 
 # Certificate subject aletrnative names
 SERVER_CRT_HOST		+= $(SERVICE_NAME).local
-
-# Kibana URL
-KIBANA_URL		?= http://kibana.local:5601
 
 ### ELASTICSEARCH ##############################################################
 
@@ -55,9 +51,6 @@ DOCKER_IMAGE_DEPENDENCIES += $(SIMPLE_CA_IMAGE)
 SIMPLE_CA_IMAGE_NAME	?= $(DOCKER_PROJECT)/simple-ca
 SIMPLE_CA_IMAGE_TAG	?= latest
 SIMPLE_CA_IMAGE		?= $(SIMPLE_CA_IMAGE_NAME):$(SIMPLE_CA_IMAGE_TAG)
-
-# Simple CA service name in Docker Compose file
-SIMPLE_CA_SERVICE_NAME	?= $(shell echo $(SIMPLE_CA_NAME) | sed -E -e "s/[^[:alnum:]_]+/_/g")
 
 ### MAKE_VARS ##################################################################
 

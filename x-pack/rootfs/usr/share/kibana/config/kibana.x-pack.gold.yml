@@ -1,2 +1,9 @@
+# X-Pack Basic
+xpack.monitoring.enabled: true
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+# X-Pack Gold
+xpack.reporting.enabled: true
+xpack.security.enabled: true
+# X-Pack Platinum
 xpack.graph.enabled: false
 xpack.ml.enabled: false

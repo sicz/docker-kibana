@@ -14,37 +14,13 @@ describe "Docker container", :test => :docker_container do
     it { is_expected.to be_running }
   end
 
-  ### FILES ####################################################################
-
-  describe "Files" do
-    [
-      # [file,                                  mode, user,    group,    [expectations]]
-      ["/usr/share/kibana/config/kibana.yml",   640, "kibana", "kibana", [:be_file]],
-    ].each do |file, mode, user, group, expectations|
-      expectations ||= []
-      context file(file) do
-        it { is_expected.to exist }
-        it { is_expected.to be_file }       if expectations.include?(:be_file)
-        it { is_expected.to be_directory }  if expectations.include?(:be_directory)
-        it { is_expected.to be_mode(mode) } unless mode.nil?
-        it { is_expected.to be_owned_by(user) } unless user.nil?
-        it { is_expected.to be_grouped_into(group) } unless group.nil?
-        its(:sha256sum) do
-          is_expected.to eq(
-              Digest::SHA256.file("config/#{subject.name}").to_s
-          )
-        end if expectations.include?(:eq_sha256sum)
-      end
-    end
-  end
-
   ### PROCESSES ################################################################
 
   describe "Processes" do
     [
       # [process,                   user,             group,            pid]
       ["tini",                      "root",           "root",           1],
-      ["node",                      "kibana",       "kibana"],
+      ["node",                      "kibana",         "kibana"],
     ].each do |process, user, group, pid|
       context process(process) do
         it { is_expected.to be_running }
@@ -71,9 +47,9 @@ describe "Docker container", :test => :docker_container do
 
   ### KIBANA ###################################################################
 
-  # TODO: Kibana monitoring API
+  # TODO: Kibana enpoint tests
 
-  # describe "URLs" do
+  # describe "Kibana endpoint" do
   #   # Execute Serverspec command locally
   #   before(:each)  { set :backend, :exec }
   #   [

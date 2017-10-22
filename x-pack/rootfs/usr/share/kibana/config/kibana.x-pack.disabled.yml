@@ -1,5 +1,8 @@
+# X-Pack Basic
 xpack.monitoring.enabled: false
+# X-Pack Gold
 xpack.reporting.enabled: false
 xpack.security.enabled: false
+# X-Pack Platinum
 xpack.graph.enabled: false
 xpack.ml.enabled: false

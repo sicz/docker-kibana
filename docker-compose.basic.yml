@@ -1,5 +1,5 @@
 ###
-###Kibana with X-Pack configuration
+### Kibana with X-Pack Basic configuration
 ###
 
 version: "3.3"

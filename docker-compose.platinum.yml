@@ -1,5 +1,5 @@
 ###
-###Kibana with X-Pack configuration
+### Kibana with X-Pack Platinum configuration
 ###
 
 version: "3.3"
@@ -10,23 +10,8 @@ services:
       - XPACK_EDITION=${XPACK_EDITION}
 
   elasticsearch:
-    depends_on:
-      - simple_ca
     environment:
-      - SERVER_CRT_HOST=${SERVER_CRT_HOST}
-      - SIMPLE_CA_URL=https://simple-ca.local
       - XPACK_EDITION=${XPACK_EDITION}
-    volumes:
-      - simple_ca_secrets:/run/secrets:ro
-
-  test:
-    volumes:
-      - simple_ca_secrets:/run/secrets:ro
-
-  wait:
-    volumes:
-      - simple_ca_secrets:/run/secrets:ro
-
-volumes:
-  simple_ca_data:
-  simple_ca_secrets:
+      # TODO: Test with xpack.security and xpack.security.http.ssl enabled
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false

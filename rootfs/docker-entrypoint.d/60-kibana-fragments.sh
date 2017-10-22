@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-### ELASTICSEARCH_DOCKER_YML ###################################################
+### KIBANA_DOCKER_YML ##########################################################
 
 if [ ! -e ${KB_PATH_CONF}/kibana.docker.yml ]; then
   info "Creating ${KB_PATH_CONF}/kibana.docker.yml"
@@ -10,24 +10,18 @@ if [ ! -e ${KB_PATH_CONF}/kibana.docker.yml ]; then
       echo "server.name: ${KB_NODE_NAME}"
     fi
     echo "server.host: 0.0.0.0"
-    echo "elasticsearch.url: ${KB_ELASTICSEARCH_URL}"
-    if [ -n "${KB_ELASTICSEARCH_USERNAME}" -a -n "${KB_ELASTICSEARCH_PASSWORD}" ]; then
-      echo "elasticsearch.username: ${KB_ELASTICSEARCH_USERNAME}"
-      echo "elasticsearch.password: ${KB_ELASTICSEARCH_PASSWORD}"
+    echo "elasticsearch.url: ${ELASTICSEARCH_URL}"
+    if [ -n "${ES_KIBANA_USERNAME}" -a -n "${ES_KIBANA_PASSWORD}" ]; then
+      echo "elasticsearch.username: ${ES_KIBANA_USERNAME}"
+      echo "elasticsearch.password: ${ES_KIBANA_PASSWORD}"
     fi
     echo "path.data: ${KB_PATH_DATA}"
-    if [ -n "${KB_PATH_LOGS}" ]; then
-      echo "logging.dest: ${KB_PATH_LOGS}"
-    fi
   ) > ${KB_PATH_CONF}/kibana.docker.yml
-  if [ -n "${DOCKER_ENTRYPOINT_DEBUG}" ]; then
-    cat ${KB_PATH_CONF}/kibana.docker.yml
-  fi
 fi
 
 KIBANA_YML_FILES="kibana.docker.yml ${KIBANA_YML_FILES}"
 
-### ELASTICSEARCH_SERVER_CERTS_YML #############################################
+### KIBANA_SERVER_CERTS_YML ####################################################
 
 if [ -e ${SERVER_CRT_FILE} ]; then
   if [ ! -e ${KB_PATH_CONF}/kibana.server-certs.yml ]; then
@@ -37,11 +31,7 @@ if [ -e ${SERVER_CRT_FILE} ]; then
       echo "server.ssl.key: ${SERVER_KEY_FILE}"
       echo "server.ssl.keyPassphrase: ${SERVER_KEY_PWD}"
     ) > ${KB_PATH_CONF}/kibana.server-certs.yml
-    if [ -n "${DOCKER_ENTRYPOINT_DEBUG}" ]; then
-      cat ${KB_PATH_CONF}/kibana.server-certs.yml
-    fi
   fi
-
   KIBANA_YML_FILES="${KIBANA_YML_FILES} kibana.server-certs.yml"
 fi
 

@@ -13,7 +13,7 @@ DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-x-pack-$(XPACK_EDITION)
 
 VARIANT_DIR		?= $(PROJECT_DIR)/x-pack
 
-BUILD_VARS		?= XPACK_EDITION
+BUILD_VARS		+= XPACK_EDITION
 
 ### EXECUTOR ###################################################################
 

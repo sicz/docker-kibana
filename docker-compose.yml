@@ -1,5 +1,5 @@
 ###
-### Default configuration
+### Kibana default configuration
 ###
 
 version: "3.3"
@@ -16,11 +16,10 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
-      - KB_ELASTICSEARCH_URL=http://elasticsearch.local:9200
+      - ELASTICSEARCH_URL=http://elasticsearch.local:9200
       - SERVER_CRT_HOST=${SERVER_CRT_HOST}
       - SERVER_KEY_PWD_FILE=/usr/share/kibana/config/server.pwd
       - SIMPLE_CA_URL=https://simple-ca.local
-      - WAIT_FOR_DNS=elasticsearch.local:9200
     # ports:
     #   - 5601:5601/tcp
     networks:
@@ -36,10 +35,8 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - discovery.type=single-node
-    expose:
-      - 9200/tcp
-      - 9300/tcp
     networks:
       default:
         aliases:
@@ -63,14 +60,6 @@ services:
       - simple_ca_secrets:/var/lib/simple-ca/secrets
 
   test:
-    volumes:
-      - simple_ca_secrets:/run/secrets:ro
-
-  wait:
-    volumes:
-      - simple_ca_secrets:/run/secrets:ro
-
-  test:
     image: ${TEST_IMAGE}
     command: ${TEST_CMD}
     depends_on:
@@ -80,9 +69,7 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
-      # Wait until the tested container is started
       - WAIT_FOR_TCP=kibana.local:5601
-      - WAIT_FOR_TIMEOUT=900
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - simple_ca_secrets:/run/secrets:ro
@@ -97,12 +84,9 @@ services:
     environment:
       - DOCKER_ENTRYPOINT_DEBUG=true
       - DOCKER_ENTRYPOINT_INFO=true
-      # Wait until the tested container is started
       - WAIT_FOR_TCP=kibana.local:5601
-      - WAIT_FOR_TIMEOUT=900
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - simple_ca_secrets:/run/secrets:ro
 
 volumes:
   simple_ca_data:

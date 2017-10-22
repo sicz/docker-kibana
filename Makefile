@@ -13,15 +13,11 @@ SHELL			+= -e
 ### DOCKER_VERSIONS ############################################################
 
 # Docker image versions
-DOCKER_VERSIONS		?= 4.6.6 \
-			   5.6.2 \
-			   5.6.2/basic \
-			   5.6.2/gold \
-			   5.6.2/platinum \
-			   6.0.0 \
-			   6.0.0/basic \
-			   6.0.0/gold \
-			   6.0.0/platinum
+DOCKER_VERSIONS		?= $(shell \
+				find . -type d | \
+				sed -E "s|^\./||" | \
+				egrep "^\d+\.\d+\.\d+(/basic|/gold|/platinum)?$$" \
+			   )
 
 # Make targets propagated to all Docker image versions
 DOCKER_VERSION_TARGETS	+= build \
