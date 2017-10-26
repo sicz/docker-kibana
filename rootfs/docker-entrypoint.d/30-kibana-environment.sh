@@ -16,7 +16,7 @@ if [ -n "${DOCKER_HOST_NAME}" ]; then
 fi
 
 # Create missing directories
-mkdir -p ${KB_PATH_CONF} ${KB_PATH_DATA} ${KB_PATH_LOGS} KB_PATH_OPTIMIZE
+mkdir -p ${KB_PATH_CONF} ${KB_PATH_DATA} ${KB_PATH_LOGS} ${KB_PATH_OPTIMIZE}
 
 # Populate settings directory
 if [ "$(readlink -f ${KB_HOME}/config)" != "$(readlink -f ${KB_PATH_CONF})" ]; then
