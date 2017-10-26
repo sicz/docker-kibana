@@ -185,7 +185,7 @@ describe "Docker image", :test => :docker_image do
     if ENV["KIBANA_VERSION"].start_with?("4.") then
       files += [
         [
-          "/docker-entrypoint.d/31-kb4x-environment.sh",
+          "/docker-entrypoint.d/32-kb4x-environment.sh",
           644, "root", "root", [:be_file, :eq_sha256sum],
           "#{ENV["KIBANA_VERSION"]}/rootfs",
         ],
