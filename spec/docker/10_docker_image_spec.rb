@@ -132,7 +132,7 @@ describe "Docker image", :test => :docker_image do
         644, "root", "root", [:be_file, :eq_sha256sum],
       ],
       [
-        "/docker-entrypoint.d/80-kibana-opts.sh",
+        "/docker-entrypoint.d/80-kibana-options.sh",
         644, "root", "root", [:be_file, :eq_sha256sum],
       ],
       [

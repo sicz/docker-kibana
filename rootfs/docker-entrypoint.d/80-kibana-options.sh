@@ -10,7 +10,7 @@ if [ -n "${DOCKER_CONTAINER_START}" ]; then
       KB_OPTS+=("--${KEY}=${VAL}")
     fi
   done < <(env | egrep "^[a-z_]+\.[a-z_]+" | sort)
-  set -- $@ ${KB_OPTS[@]}
+  set -- "$@" ${KB_OPTS[@]}
   unset KB_OPTS
 fi
 
