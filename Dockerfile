@@ -40,7 +40,7 @@ WORKDIR ${KB_HOME}
 RUN set -exo pipefail; \
   adduser --uid 1000 --user-group --home-dir ${KB_HOME} ${DOCKER_USER}; \
   curl -fLo /tmp/${KB_TARBALL} ${KB_TARBALL_URL}; \
-  EXPECTED_CHECKSUM=$(curl -fL ${KB_TARBALL_CHECKSUM_URL}); \
+  EXPECTED_CHECKSUM=$(curl -fL ${KB_TARBALL_CHECKSUM_URL} | cut -d " " -f 1); \
   TARBALL_CHECKSUM=$(${CHECKSUM}sum /tmp/${KB_TARBALL} | cut -d " " -f 1); \
   [ "${TARBALL_CHECKSUM}" = "${EXPECTED_CHECKSUM}" ]; \
   tar xz --strip-components=1 -f /tmp/${KB_TARBALL}; \
