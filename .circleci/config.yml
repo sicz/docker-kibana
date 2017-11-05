@@ -75,31 +75,31 @@ jobs:
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.2:
+  kibana-5.6.3:
     <<: *build_kibana
     environment:
-      - CI_DIR=5.6.2
+      - CI_DIR=5.6.3
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.2-x-pack-basic:
+  kibana-5.6.3-x-pack-basic:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.2/basic
+      - CI_DIR=5.6.3/basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.2-x-pack-gold:
+  kibana-5.6.3-x-pack-gold:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.2/gold
+      - CI_DIR=5.6.3/gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.2-x-pack-platinum:
+  kibana-5.6.3-x-pack-platinum:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.2/platinum
+      - CI_DIR=5.6.3/platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
@@ -163,16 +163,16 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-5.6.2
-      - kibana-5.6.2-x-pack-basic:
+      - kibana-5.6.3
+      - kibana-5.6.3-x-pack-basic:
           requires:
-            - kibana-5.6.2
-      - kibana-5.6.2-x-pack-gold:
+            - kibana-5.6.3
+      - kibana-5.6.3-x-pack-gold:
           requires:
-            - kibana-5.6.2
-      - kibana-5.6.2-x-pack-platinum:
+            - kibana-5.6.3
+      - kibana-5.6.3-x-pack-platinum:
           requires:
-            - kibana-5.6.2
+            - kibana-5.6.3
       - kibana-6.0.0
       - kibana-6.0.0-x-pack-basic:
           requires:
@@ -186,10 +186,10 @@ workflows:
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-5.6.2
-            - kibana-5.6.2-x-pack-basic
-            - kibana-5.6.2-x-pack-gold
-            - kibana-5.6.2-x-pack-platinum
+            - kibana-5.6.3
+            - kibana-5.6.3-x-pack-basic
+            - kibana-5.6.3-x-pack-gold
+            - kibana-5.6.3-x-pack-platinum
             - kibana-6.0.0
             - kibana-6.0.0-x-pack-basic
             - kibana-6.0.0-x-pack-gold
