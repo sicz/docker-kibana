@@ -16,6 +16,7 @@ jobs:
       - run:
           name: Pull Docker images
           command: |
+            cd ${CI_DIR}
             make docker-pull-baseimage
             make docker-pull-image || true
             make docker-pull-dependencies
@@ -53,6 +54,7 @@ jobs:
       - run:
           name: Pull Docker images
           command: |
+            cd ${CI_DIR}
             make docker-pull-image || true
             make docker-pull-dependencies
             make docker-pull-testimage
@@ -88,59 +90,31 @@ jobs:
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.3:
+  kibana-6.1.1:
     <<: *build_kibana
     environment:
-      - CI_DIR=5.6.3
+      - CI_DIR=6.1.1
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.3-x-pack-basic:
+  kibana-6.1.1-x-pack-basic:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.3/basic
+      - CI_DIR=6.1.1/basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.3-x-pack-gold:
+  kibana-6.1.1-x-pack-gold:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.3/gold
+      - CI_DIR=6.1.1/gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-5.6.3-x-pack-platinum:
+  kibana-6.1.1-x-pack-platinum:
     <<: *build_plugin
     environment:
-      - CI_DIR=5.6.3/platinum
-      - MAKEFLAGS=--no-print-directory
-      - RSPEC_FORMAT=doc
-
-  kibana-6.0.0:
-    <<: *build_kibana
-    environment:
-      - CI_DIR=6.0.0
-      - MAKEFLAGS=--no-print-directory
-      - RSPEC_FORMAT=doc
-
-  kibana-6.0.0-x-pack-basic:
-    <<: *build_plugin
-    environment:
-      - CI_DIR=6.0.0/basic
-      - MAKEFLAGS=--no-print-directory
-      - RSPEC_FORMAT=doc
-
-  kibana-6.0.0-x-pack-gold:
-    <<: *build_plugin
-    environment:
-      - CI_DIR=6.0.0/gold
-      - MAKEFLAGS=--no-print-directory
-      - RSPEC_FORMAT=doc
-
-  kibana-6.0.0-x-pack-platinum:
-    <<: *build_plugin
-    environment:
-      - CI_DIR=6.0.0/platinum
+      - CI_DIR=6.1.1/platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
@@ -176,34 +150,20 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-5.6.3
-      - kibana-5.6.3-x-pack-basic:
+      - kibana-6.1.1
+      - kibana-6.1.1-x-pack-basic:
           requires:
-            - kibana-5.6.3
-      - kibana-5.6.3-x-pack-gold:
+            - kibana-6.1.1
+      - kibana-6.1.1-x-pack-gold:
           requires:
-            - kibana-5.6.3
-      - kibana-5.6.3-x-pack-platinum:
+            - kibana-6.1.1
+      - kibana-6.1.1-x-pack-platinum:
           requires:
-            - kibana-5.6.3
-      - kibana-6.0.0
-      - kibana-6.0.0-x-pack-basic:
-          requires:
-            - kibana-6.0.0
-      - kibana-6.0.0-x-pack-gold:
-          requires:
-            - kibana-6.0.0
-      - kibana-6.0.0-x-pack-platinum:
-          requires:
-            - kibana-6.0.0
+            - kibana-6.1.1
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-5.6.3
-            - kibana-5.6.3-x-pack-basic
-            - kibana-5.6.3-x-pack-gold
-            - kibana-5.6.3-x-pack-platinum
-            - kibana-6.0.0
-            - kibana-6.0.0-x-pack-basic
-            - kibana-6.0.0-x-pack-gold
-            - kibana-6.0.0-x-pack-platinum
+            - kibana-6.1.1
+            - kibana-6.1.1-x-pack-basic
+            - kibana-6.1.1-x-pack-gold
+            - kibana-6.1.1-x-pack-platinum
