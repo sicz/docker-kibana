@@ -15,7 +15,7 @@ DOCKER_VERSIONS		?= 4.6.6 \
 			   6.1.1 \
 			   6.1.1/basic \
 			   6.1.1/gold \
-			   6.1.1/platinumy
+			   6.1.1/platinum
 
 # Make targets propagated to all Docker image versions
 DOCKER_VERSION_TARGETS	+= build \
