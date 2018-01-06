@@ -10,7 +10,7 @@ VARIANT_DIR		?= $(CURDIR)
 
 DOCKER_CONFIG		?= kibana-4
 
-ELASTICSEARCH_IMAGE_TAG	?= 2.4.5
+ELASTICSEARCH_IMAGE_TAG	?= 2.4.6
 
 ### TEST #######################################################################
 
