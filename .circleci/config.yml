@@ -14,6 +14,13 @@ jobs:
       - setup_remote_docker:
           version: 17.06.0-ce
       - run:
+          name: Pull Docker images
+          command: |
+            make docker-pull-baseimage
+            make docker-pull-image || true
+            make docker-pull-dependencies
+            make docker-pull-testimage
+      - run:
           name: Build and test Kibana image
           command: |
             cd ${CI_DIR}
@@ -43,6 +50,12 @@ jobs:
             mv Mk-master Mk
       - setup_remote_docker:
           version: 17.06.0-ce
+      - run:
+          name: Pull Docker images
+          command: |
+            make docker-pull-image || true
+            make docker-pull-dependencies
+            make docker-pull-testimage
       - attach_workspace:
           at: /tmp/workspace
       - run:

@@ -13,11 +13,11 @@ SHELL			+= -e
 ### DOCKER_VERSIONS ############################################################
 
 # Docker image versions
-DOCKER_VERSIONS		?= $(shell \
-				find . -type d | \
-				sed -E "s|^\./||" | \
-				egrep "^\d+\.\d+\.\d+(/basic|/gold|/platinum)?$$" \
-			   )
+DOCKER_VERSIONS		?= 4.6.6 \
+			   6.1.1 \
+			   6.1.1/basic \
+			   6.1.1/gold \
+			   6.1.1/platinumy
 
 # Make targets propagated to all Docker image versions
 DOCKER_VERSION_TARGETS	+= build \
@@ -44,6 +44,14 @@ $(DOCKER_VERSION_TARGETS):
 	@for DOCKER_VERSION in $(DOCKER_VERSIONS); do \
 		cd $(CURDIR)/$${DOCKER_VERSION}; \
 		$(MAKE) display-version-header $@; \
+	done
+# Do docker-pull-baseimage only on pure Kibana
+docker-pull-baseimage:
+	@for DOCKER_VERSION in $(DOCKER_VERSIONS); do \
+		if [[ $${DOCKER_VERSION} =~ ^[0-9]+(\.[0-9]+)*$$ ]]; then \
+			cd $(CURDIR)/$${DOCKER_VERSION}; \
+			$(MAKE) display-version-header $@; \
+		fi; \
 	done
 
 ################################################################################
