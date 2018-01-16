@@ -90,31 +90,31 @@ jobs:
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.1:
+  kibana-6.1.2:
     <<: *build_kibana
     environment:
-      - CI_DIR=6.1.1
+      - CI_DIR=6.1.2
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.1-x-pack-basic:
+  kibana-6.1.2-x-pack-basic:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.1/basic
+      - CI_DIR=6.1.2/basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.1-x-pack-gold:
+  kibana-6.1.2-x-pack-gold:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.1/gold
+      - CI_DIR=6.1.2/gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.1-x-pack-platinum:
+  kibana-6.1.2-x-pack-platinum:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.1/platinum
+      - CI_DIR=6.1.2/platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
@@ -150,20 +150,20 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-6.1.1
-      - kibana-6.1.1-x-pack-basic:
+      - kibana-6.1.2
+      - kibana-6.1.2-x-pack-basic:
           requires:
-            - kibana-6.1.1
-      - kibana-6.1.1-x-pack-gold:
+            - kibana-6.1.2
+      - kibana-6.1.2-x-pack-gold:
           requires:
-            - kibana-6.1.1
-      - kibana-6.1.1-x-pack-platinum:
+            - kibana-6.1.2
+      - kibana-6.1.2-x-pack-platinum:
           requires:
-            - kibana-6.1.1
+            - kibana-6.1.2
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-6.1.1
-            - kibana-6.1.1-x-pack-basic
-            - kibana-6.1.1-x-pack-gold
-            - kibana-6.1.1-x-pack-platinum
+            - kibana-6.1.2
+            - kibana-6.1.2-x-pack-basic
+            - kibana-6.1.2-x-pack-gold
+            - kibana-6.1.2-x-pack-platinum
