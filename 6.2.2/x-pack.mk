@@ -5,14 +5,11 @@ BASE_IMAGE_TAG		?= $(KIBANA_TAG)
 
 ### DOCKER_IMAGE ###############################################################
 
-XPACK_EDITION		?= gold
-
 DOCKER_IMAGE_TAG	?= $(BASE_IMAGE_TAG)-x-pack-$(XPACK_EDITION)
 
 ### BUILD ######################################################################
 
 VARIANT_DIR		?= $(PROJECT_DIR)/x-pack
-
 BUILD_VARS		+= XPACK_EDITION
 
 ### EXECUTOR ###################################################################
@@ -26,11 +23,10 @@ ELASTICSEARCH_IMAGE_TAG	?= $(KIBANA_TAG)-x-pack
 ### TEST #######################################################################
 
 # Do all tests
-SPEC_OPTS		?=
+SPEC_OPTS		?= --tag ~searchguard
 
 ### MK_DOCKER_IMAGE ############################################################
 
-PROJECT_DIR		?= $(abspath ../..)
-include ../Makefile
+include $(VERSION_DIR)/kibana.mk
 
 ################################################################################

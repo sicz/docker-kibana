@@ -14,4 +14,5 @@ RUN set -exo pipefail; \
   # Use larger heap size during plugin installation to circumvent
   # https://github.com/elastic/kibana/issues/15683
   NODE_OPTIONS="--max-old-space-size=4096" kibana-plugin install x-pack; \
+  # Remove temporary files
   rm -f config/kibana.yml

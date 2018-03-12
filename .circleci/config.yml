@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Pull Docker images
           command: |
-            cd ${CI_DIR}
+            cd ${CI_DIR}/${PLUGIN_DIR}
             make docker-pull-image || true
             make docker-pull-dependencies
             make docker-pull-testimage
@@ -63,17 +63,17 @@ jobs:
       - run:
           name: Load Kibana base image
           command: |
-            cd ${CI_DIR}/..
+            cd ${CI_DIR}/${BASEIMAGE_DIR}
             make docker-load-image DOCKER_IMAGE_DEPOT=/tmp/workspace
       - run:
           name: Build Kibana plugin image
           command: |
-            cd ${CI_DIR}
+            cd ${CI_DIR}/${PLUGIN_DIR}
             make ci
       - run:
           name: Save Kibana plugin image to workspace
           command: |
-            cd ${CI_DIR}
+            cd ${CI_DIR}/${PLUGIN_DIR}
             mkdir -p /tmp/workspace
             rm -f /tmp/workspace/*.image
             make docker-save-image DOCKER_IMAGE_DEPOT=/tmp/workspace
@@ -90,33 +90,45 @@ jobs:
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.2:
+  kibana-6.2.2:
     <<: *build_kibana
     environment:
-      - CI_DIR=6.1.2
+      - CI_DIR=6.2.2
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.2-x-pack-basic:
+  kibana-6.2.2-x-pack-basic:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.2/basic
+      - CI_DIR=6.2.2
+      - PLUGIN_DIR=x-pack-basic
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.2-x-pack-gold:
+  kibana-6.2.2-x-pack-gold:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.2/gold
+      - CI_DIR=6.2.2
+      - PLUGIN_DIR=x-pack-gold
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
 
-  kibana-6.1.2-x-pack-platinum:
+  kibana-6.2.2-x-pack-platinum:
     <<: *build_plugin
     environment:
-      - CI_DIR=6.1.2/platinum
+      - CI_DIR=6.2.2
+      - PLUGIN_DIR=x-pack-platinum
       - MAKEFLAGS=--no-print-directory
       - RSPEC_FORMAT=doc
+
+  # kibana-6.2.2-searchguard:
+  #   <<: *build_plugin
+  #   environment:
+  #     - CI_DIR=6.2.2
+  #     - PLUGIN_DIR=searchguard
+  #     - BASEIMAGE_DIR=x-pack-basic
+  #     - MAKEFLAGS=--no-print-directory
+  #     - RSPEC_FORMAT=doc
 
   deploy:
     docker:
@@ -150,20 +162,24 @@ workflows:
   build:
     jobs:
       - kibana-4.6.6
-      - kibana-6.1.2
-      - kibana-6.1.2-x-pack-basic:
+      - kibana-6.2.2
+      - kibana-6.2.2-x-pack-basic:
           requires:
-            - kibana-6.1.2
-      - kibana-6.1.2-x-pack-gold:
+            - kibana-6.2.2
+      - kibana-6.2.2-x-pack-gold:
           requires:
-            - kibana-6.1.2
-      - kibana-6.1.2-x-pack-platinum:
+            - kibana-6.2.2
+      - kibana-6.2.2-x-pack-platinum:
           requires:
-            - kibana-6.1.2
+            - kibana-6.2.2
+      # - kibana-6.2.2-searchguard:
+      #     requires:
+      #       - kibana-6.2.2-x-pack-basic
       - deploy:
           requires:
             - kibana-4.6.6
-            - kibana-6.1.2
-            - kibana-6.1.2-x-pack-basic
-            - kibana-6.1.2-x-pack-gold
-            - kibana-6.1.2-x-pack-platinum
+            - kibana-6.2.2
+            - kibana-6.2.2-x-pack-basic
+            - kibana-6.2.2-x-pack-gold
+            - kibana-6.2.2-x-pack-platinum
+            # - kibana-6.2.2-searchguard

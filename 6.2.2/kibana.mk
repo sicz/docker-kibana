@@ -1,15 +1,14 @@
 ### DOCKER_IMAGE ###############################################################
 
-KIBANA_VERSION		?= 6.1.2
+KIBANA_VERSION		?= 6.2.2
 
 ### TEST #######################################################################
 
 # Skip Elasticsearch X-Pack tests
-SPEC_OPTS		?= --tag ~x_pack
+SPEC_OPTS		?= --tag ~x_pack --tag ~searchguard
 
 ### MK_DOCKER_IMAGE ############################################################
 
-PROJECT_DIR		?= $(abspath ..)
 include $(PROJECT_DIR)/docker.version.mk
 
 ################################################################################
