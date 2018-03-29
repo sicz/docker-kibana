@@ -10,6 +10,6 @@ services:
       - XPACK_EDITION=${XPACK_EDITION}
 
   elasticsearch:
-    image: $(ELASTICSEARCH_IMAGE)-x-pack
+    image: ${ELASTICSEARCH_IMAGE}-x-pack
     environment:
       - XPACK_EDITION=${XPACK_EDITION}
