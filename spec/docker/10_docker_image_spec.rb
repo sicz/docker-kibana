@@ -241,6 +241,15 @@ describe "Docker image", :test => :docker_image do
         "x-pack/rootfs",
       ],
       [
+        "/docker-entrypoint.d/62-x-pack-fragments.sh",
+        644, "root", "root", [:be_file, :eq_sha256sum],
+        "x-pack/rootfs",
+      ],
+      [
+        "/usr/share/kibana/config/kibana.x-pack.yml",
+        640, "kibana", "kibana", [:be_file],
+      ],
+      [
         "/usr/share/kibana/config/kibana.x-pack.basic.yml",
         640, "kibana", "kibana", [:be_file, :eq_sha256sum],
         "x-pack/rootfs",
@@ -262,6 +271,7 @@ describe "Docker image", :test => :docker_image do
         [
           "^# kibana.docker.yml$",
           "^# kibana.server-certs.yml$",
+          "^# kibana.x-pack.yml$",
           "^# kibana.x-pack.#{ENV["XPACK_EDITION"]}.yml$",
         ],
       ],
