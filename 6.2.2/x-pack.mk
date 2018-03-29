@@ -16,10 +16,6 @@ BUILD_VARS		+= XPACK_EDITION
 
 DOCKER_CONFIG		?= $(XPACK_EDITION)
 
-### ELASTICSEARCH ##############################################################
-
-ELASTICSEARCH_IMAGE_TAG	?= $(KIBANA_TAG)-x-pack
-
 ### TEST #######################################################################
 
 # Do all tests
@@ -27,6 +23,6 @@ SPEC_OPTS		?= --tag ~searchguard
 
 ### MK_DOCKER_IMAGE ############################################################
 
-include $(VERSION_DIR)/kibana.mk
+include $(VERSION_DIR)/Makefile
 
 ################################################################################
