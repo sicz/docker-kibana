@@ -3,7 +3,7 @@
 ### X-PACK #####################################################################
 
 # Default Kibana encryption key location
-if [ -e /run/secrets/kb_encryption_key ]
+if [ -e /run/secrets/kb_encryption_key ]; then
   : ${XPACK_ENCRYPTION_KEY_FILE:=/run/secrets/kb_encryption_key}
 else
   : ${KB_ENCRYPTION_KEY_FILE:=${KB_PATH_CONF}/kb_encryption_key}
