@@ -83,13 +83,6 @@ jobs:
           paths:
             - "*.image"
 
-  kibana-4.6.6:
-    <<: *build_kibana
-    environment:
-      - CI_DIR=4.6.6
-      - MAKEFLAGS=--no-print-directory
-      - RSPEC_FORMAT=doc
-
   kibana-6.2.2:
     <<: *build_kibana
     environment:
@@ -161,7 +154,6 @@ workflows:
 
   build:
     jobs:
-      - kibana-4.6.6
       - kibana-6.2.2
       - kibana-6.2.2-x-pack-basic:
           requires:
@@ -177,7 +169,6 @@ workflows:
       #       - kibana-6.2.2-x-pack-basic
       - deploy:
           requires:
-            - kibana-4.6.6
             - kibana-6.2.2
             - kibana-6.2.2-x-pack-basic
             - kibana-6.2.2-x-pack-gold
